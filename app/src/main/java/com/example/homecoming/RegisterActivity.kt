@@ -22,6 +22,7 @@ class RegisterActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
     private lateinit var addressLatLng: LatLng
     private var preferenceKey = 0
+    private var addressFound = false
     private lateinit var sharedPref: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,13 +32,11 @@ class RegisterActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
         var addressInput = findViewById<EditText>(R.id.search_address)
         addressInput.setOnFocusChangeListener { _, hasFocus -> searchAddress(addressInput, hasFocus) }
-
         sharedPref = getSharedPreferences(getString(R.string.preference_file_name), Context.MODE_PRIVATE)
 
         for (entry in sharedPref.all.entries) {
             preferenceKey++
         }
-
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -46,6 +45,7 @@ class RegisterActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun searchAddress(addressText: EditText, hasFocus: Boolean){
         if (!hasFocus){
+            addressFound = false
             mMap.clear()
 
             if (isConnectedToInternet(this)){
@@ -60,7 +60,7 @@ class RegisterActivity : AppCompatActivity(), OnMapReadyCallback {
 
                     } else {
                         var location = locationList.first()
-
+                        addressFound = true
                         addressLatLng = LatLng(location.latitude, location.longitude)
                         mMap.addMarker(MarkerOptions().position(addressLatLng).title(location.getAddressLine(0)))
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(addressLatLng, 10.0f))
@@ -82,17 +82,22 @@ class RegisterActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     fun registerData(v: View){
-        var address = addressLatLng.toString()
         var tag = findViewById<EditText>(R.id.tag).text.toString()
         var phone = findViewById<EditText>(R.id.phone).text.toString()
         var distance = findViewById<EditText>(R.id.distance).text.toString()
-        var list = setOf(address, tag, phone, distance)
+        if(addressFound && tag.isNotEmpty() && phone.isNotEmpty() && distance.isNotEmpty()){
+            var addressLat = addressLatLng.latitude.toString()
+            var addressLng = addressLatLng.latitude.toString()
+            var stringData = "$addressLat,$addressLng,$tag,$phone,$distance"
 
-        val editor = sharedPref.edit()
-        editor.putStringSet(preferenceKey.toString(), list)
-        editor.commit()
+            val editor = sharedPref.edit()
+            editor.putString(preferenceKey.toString(), stringData)
+            editor.commit()
 
-        preferenceKey++
+            preferenceKey++
+        } else {
+            Toast.makeText(this, "Por favor, preencha todos os campos corretamente", Toast.LENGTH_LONG).show()
+        }
     }
 
 }
