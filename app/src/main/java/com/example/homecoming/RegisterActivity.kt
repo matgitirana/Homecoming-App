@@ -91,6 +91,8 @@ class RegisterActivity : AppCompatActivity(), OnMapReadyCallback {
         val editor = sharedPref.edit()
         editor.putStringSet(preferenceKey.toString(), list)
         editor.commit()
+
+        preferenceKey++
     }
 
 }
