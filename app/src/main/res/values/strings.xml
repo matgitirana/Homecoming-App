@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Homecoming</string>
-    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_maps">Homecoming</string>
     <string name="preference_file_name">Registros</string>
 </resources>
