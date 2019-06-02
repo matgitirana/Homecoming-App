@@ -54,20 +54,20 @@ class RegisterActivity : AppCompatActivity(), OnMapReadyCallback {
                     var locationList = coder.getFromLocationName(addressString, 1)
 
                     if(locationList.isEmpty()){
-                        Toast.makeText(this, "Endereço não encontrado, por favor tente novamente", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, "Address not found, try again", Toast.LENGTH_LONG).show()
 
                     } else {
                         var location = locationList.first()
                         addressLatLng = LatLng(location.latitude, location.longitude)
                         mMap.addMarker(MarkerOptions().position(addressLatLng).title(location.getAddressLine(0)))
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(addressLatLng, 10.0f))
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(addressLatLng, 16.0f))
 
                     }
                 } else{
-                    Toast.makeText(this, "Por favor, digite um endereço", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Type an address", Toast.LENGTH_LONG).show()
                 }
             } else{
-                Toast.makeText(this, "Por favor, conecte a internet", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Connect to the internet", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -96,11 +96,13 @@ class RegisterActivity : AppCompatActivity(), OnMapReadyCallback {
             editor.commit()
 
             preferenceKey++
+
+            finish()
         } else {
-            Toast.makeText(this, "Por favor, preencha todos os campos corretamente", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Fill all fields correctly", Toast.LENGTH_LONG).show()
         }
 
-        finish()
+
     }
 
 }

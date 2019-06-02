@@ -46,12 +46,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult?) {
-                locationResult ?: return
-                for (location in locationResult.locations){
-                    updateLocation(location)
-                }
+                super.onLocationResult(locationResult)
+
+                updateLocation(locationResult!!.lastLocation)
+
             }
         }
+
+
     }
 
 
@@ -95,7 +97,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             return
         }
 
-        fusedLocationClient.requestLocationUpdates(LocationRequest.create(), locationCallback, null)
+        var locationRequest = LocationRequest()
+        locationRequest.interval = 1000
+        locationRequest.fastestInterval = 1000
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
 
 
     }
