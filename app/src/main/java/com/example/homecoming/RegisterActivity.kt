@@ -87,7 +87,7 @@ class RegisterActivity : AppCompatActivity(), OnMapReadyCallback {
         var distance = findViewById<EditText>(R.id.distance).text.toString()
         if(addressFound && tag.isNotEmpty() && phone.isNotEmpty() && distance.isNotEmpty()){
             var addressLat = addressLatLng.latitude.toString()
-            var addressLng = addressLatLng.latitude.toString()
+            var addressLng = addressLatLng.longitude.toString()
             var stringData = "$addressLat,$addressLng,$tag,$phone,$distance"
 
             val editor = sharedPref.edit()
@@ -98,6 +98,8 @@ class RegisterActivity : AppCompatActivity(), OnMapReadyCallback {
         } else {
             Toast.makeText(this, "Por favor, preencha todos os campos corretamente", Toast.LENGTH_LONG).show()
         }
+
+        finish()
     }
 
 }
