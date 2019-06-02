@@ -22,7 +22,6 @@ class RegisterActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
     private lateinit var addressLatLng: LatLng
     private var preferenceKey = 0
-    private var addressFound = false
     private lateinit var sharedPref: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,7 +44,6 @@ class RegisterActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun searchAddress(addressText: EditText, hasFocus: Boolean){
         if (!hasFocus){
-            addressFound = false
             mMap.clear()
 
             if (isConnectedToInternet(this)){
@@ -60,7 +58,6 @@ class RegisterActivity : AppCompatActivity(), OnMapReadyCallback {
 
                     } else {
                         var location = locationList.first()
-                        addressFound = true
                         addressLatLng = LatLng(location.latitude, location.longitude)
                         mMap.addMarker(MarkerOptions().position(addressLatLng).title(location.getAddressLine(0)))
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(addressLatLng, 10.0f))
@@ -82,10 +79,14 @@ class RegisterActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     fun registerData(v: View){
+        var addressInput = findViewById<EditText>(R.id.search_address)
+        addressInput.clearFocus()
+
         var tag = findViewById<EditText>(R.id.tag).text.toString()
         var phone = findViewById<EditText>(R.id.phone).text.toString()
         var distance = findViewById<EditText>(R.id.distance).text.toString()
-        if(addressFound && tag.isNotEmpty() && phone.isNotEmpty() && distance.isNotEmpty()){
+
+        if(::addressLatLng.isInitialized && tag.isNotEmpty() && phone.isNotEmpty() && distance.isNotEmpty()){
             var addressLat = addressLatLng.latitude.toString()
             var addressLng = addressLatLng.latitude.toString()
             var stringData = "$addressLat,$addressLng,$tag,$phone,$distance"
