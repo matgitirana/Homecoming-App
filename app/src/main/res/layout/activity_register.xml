@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".RegisterActivity">
+
+    <EditText android:layout_width="match_parent" android:layout_height="50dp"
+              android:id="@+id/search_address"
+              app:layout_constraintTop_toTopOf="parent"
+              app:layout_constraintStart_toStartOf="parent" android:hint="Digite o endereço"
+              android:layout_marginStart="10dp" app:layout_constraintEnd_toEndOf="parent"
+              android:layout_marginTop="10dp" android:layout_marginEnd="10dp" android:textAlignment="center"/>
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="374dp"
+              android:layout_height="366dp"
+              android:id="@+id/map"
+              tools:context=".MapsActivity"
+              android:name="com.google.android.gms.maps.SupportMapFragment"
+              app:layout_constraintTop_toBottomOf="@+id/search_address" app:layout_constraintStart_toStartOf="parent"
+              android:layout_marginStart="8dp" app:layout_constraintEnd_toEndOf="parent"
+              android:layout_marginEnd="8dp"/>
+
+    <EditText android:layout_width="match_parent" android:layout_height="50dp"
+              android:id="@+id/tag"
+              app:layout_constraintStart_toStartOf="parent" android:hint="Digite uma tag"
+              android:layout_marginStart="10dp" app:layout_constraintEnd_toEndOf="parent"
+              android:layout_marginTop="48dp" android:layout_marginEnd="10dp" android:textAlignment="center"
+              app:layout_constraintHorizontal_bias="0.0" app:layout_constraintTop_toBottomOf="@+id/map"/>
+
+    <EditText android:layout_width="218dp" android:layout_height="40dp"
+              android:id="@+id/phone"
+              app:layout_constraintStart_toStartOf="parent" android:hint="Digite o telefone destino"
+              android:layout_marginStart="10dp" app:layout_constraintEnd_toEndOf="parent"
+              android:layout_marginTop="24dp" android:layout_marginEnd="10dp" android:textAlignment="center"
+              app:layout_constraintHorizontal_bias="0.0" app:layout_constraintTop_toBottomOf="@+id/tag"
+              android:inputType="number"/>
+
+    <EditText android:layout_width="155dp" android:layout_height="40dp"
+              android:id="@+id/distance"
+              app:layout_constraintStart_toStartOf="parent" android:hint="Digite a distância"
+              android:layout_marginStart="10dp" app:layout_constraintEnd_toEndOf="parent"
+              android:layout_marginTop="24dp" android:layout_marginEnd="10dp" android:textAlignment="center"
+              app:layout_constraintHorizontal_bias="0.974" app:layout_constraintTop_toBottomOf="@+id/tag"
+              android:inputType="numberDecimal"/>
+    <Button
+            android:text="OK"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="registerData"
+            android:id="@+id/ok_button" android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="8dp" app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"/>
+
+
+</android.support.constraint.ConstraintLayout>
