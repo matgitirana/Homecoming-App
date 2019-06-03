@@ -12,14 +12,16 @@
             android:layout_alignParentTop="true"/>
     <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="200dp" android:layout_marginTop="32dp" android:layout_below="@+id/map"
+            android:layout_height="142dp" android:layout_marginTop="32dp" android:layout_below="@+id/map"
             android:id="@+id/scrollView">
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                       android:orientation="vertical" android:id="@+id/listLayout"/>
     </ScrollView>
     <Button
-            android:text="Button"
+            android:text="Add location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:id="@+id/button"
-            android:onClick="registerLocation"/>
+            android:onClick="registerLocation" android:layout_marginTop="32dp"
+            android:layout_below="@+id/scrollView" android:layout_alignParentEnd="true"
+            android:layout_marginEnd="135dp"/>
 </RelativeLayout>
