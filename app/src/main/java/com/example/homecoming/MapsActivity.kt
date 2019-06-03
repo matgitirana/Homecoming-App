@@ -82,6 +82,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             if (destination != null) {
                 mMap.addMarker(destination)
 
+                showBothMarkers()
+
                 var thisLocation = Location("here")
                 thisLocation.latitude = currentLocation.position.latitude
                 thisLocation.longitude = currentLocation.position.longitude
@@ -102,10 +104,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     distance = -1.0
                     destination = null
                 }
+            } else {
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                    LatLng(location.latitude, location.longitude), 16F))
             }
 
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                LatLng(location.latitude, location.longitude), 16F))
+
 
         }
     }
@@ -117,6 +121,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 1)
+        }
+
+        fusedLocationClient.lastLocation.addOnSuccessListener(this) { location ->
+            if (location != null) {
+                val currentLatLng = LatLng(location.latitude, location.longitude)
+                var mp = MarkerOptions()
+                mp.position(LatLng(location.latitude, location.longitude))
+                mp.title("My position")
+                currentLocation = mp
+                mMap.addMarker(currentLocation)
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 16f))
+            }
         }
 
         var locationRequest = LocationRequest()
@@ -162,16 +178,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 mp.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
                 destination = mp
                 mMap.addMarker(currentLocation)
-                mMap.addMarker(mp)
-                val builder = LatLngBounds.Builder()
-                builder.include(currentLocation.position)
-                builder.include(mp.position)
-                val bounds = builder.build()
-
-                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 200))
+                mMap.addMarker(destination)
+                showBothMarkers()
 
                 distance = valuesList[4].toDouble()
-                phone = valuesList[3].toString()
+                phone = valuesList[3]
             }
             parent.addView(button)
             listLayout.addView(parent)
@@ -181,6 +192,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     fun registerLocation(view: View) {
         val intent = Intent(this, RegisterActivity::class.java)
         startActivity(intent)
+    }
+
+    private fun showBothMarkers(){
+        val builder = LatLngBounds.Builder()
+        builder.include(currentLocation.position)
+        builder.include(destination?.position)
+        val bounds = builder.build()
+
+        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 200))
     }
 
 }
