@@ -5,9 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
+import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
+import android.telephony.SmsManager
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -31,8 +33,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var currentLocation: MarkerOptions
-    private lateinit var destination: MarkerOptions
+    private var destination: MarkerOptions? = null
     private lateinit var locationCallback: LocationCallback
+    private var distance = -1.0
+    private var phone = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +58,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
 
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS)
+            != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_FINE_LOCATION),
+                1)
+        }
+
+
     }
 
 
@@ -67,7 +79,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             currentLocation = mp
             mMap.addMarker(currentLocation)
 
-            if (::destination.isInitialized) {
+            if (destination != null) {
                 mMap.addMarker(destination)
 
                 var thisLocation = Location("here")
@@ -75,10 +87,21 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 thisLocation.longitude = currentLocation.position.longitude
 
                 var destinationLocation = Location("Destination")
-                destinationLocation.latitude = destination.position.latitude
-                destinationLocation.longitude = destination.position.longitude
+                destinationLocation.latitude = destination!!.position.latitude
+                destinationLocation.longitude = destination!!.position.longitude
 
-                Toast.makeText(this, thisLocation.distanceTo(destinationLocation).toString(), Toast.LENGTH_LONG).show()
+                var currentDistance = thisLocation.distanceTo(destinationLocation)
+
+                Toast.makeText(this, currentDistance.toString(), Toast.LENGTH_LONG).show()
+
+                if(currentDistance<=distance){
+                    val smsManager = SmsManager.getDefault() as SmsManager
+                    smsManager.sendTextMessage(phone, null, "I am almost there", null, null)
+                    Toast.makeText(this, "Arrived", Toast.LENGTH_LONG).show()
+                    phone = ""
+                    distance = -1.0
+                    destination = null
+                }
             }
 
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
@@ -94,7 +117,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 1)
-            return
         }
 
         var locationRequest = LocationRequest()
@@ -147,6 +169,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 val bounds = builder.build()
 
                 mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 200))
+
+                distance = valuesList[4].toDouble()
+                phone = valuesList[3].toString()
             }
             parent.addView(button)
             listLayout.addView(parent)
